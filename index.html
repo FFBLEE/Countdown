@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version Update Countdown</title>
+    <link rel="icon" href="pic/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-orbitron { font-family: 'Orbitron', monospace; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes glow-dark {
+            0%, 100% { text-shadow: 0 0 20px rgba(147, 51, 234, 0.8); }
+            50% { text-shadow: 0 0 30px rgba(147, 51, 234, 1), 0 0 40px rgba(251, 191, 36, 0.5); }
+        }
+        
+        @keyframes glow-hsr {
+            0%, 100% { text-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+            50% { text-shadow: 0 0 30px rgba(239, 68, 68, 1), 0 0 40px rgba(251, 191, 36, 0.5); }
+        }
+        
+        @keyframes glow-ww {
+            0%, 100% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+            50% { text-shadow: 0 0 30px rgba(34, 197, 94, 1), 0 0 40px rgba(59, 130, 246, 0.5); }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-glow-dark { animation: glow-dark 3s ease-in-out infinite alternate; }
+        .animate-glow-hsr { animation: glow-hsr 3s ease-in-out infinite alternate; }
+        .animate-glow-ww { animation: glow-ww 3s ease-in-out infinite alternate; }
+        .animate-shimmer { animation: shimmer 3s infinite; }
+        .animate-grid { animation: gridMove 20s linear infinite; }
+        
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(147, 51, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(147, 51, 234, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .grid-bg-hsr {
+            background-image: 
+                linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .grid-bg-ww {
+            background-image: 
+                linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .gradient-text-zzz {
+            background: linear-gradient(45deg, #a855f7, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: black;
+        }
+        
+        .gradient-text-hsr {
+            background: linear-gradient(45deg, #ef4444, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: black;
+        }
+        
+        .gradient-text-ww {
+            background: linear-gradient(45deg, #22c55e, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: black;
+        }
+        
+        .glass {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-hsr {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-ww {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(147, 51, 234, 0.3);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .particle:nth-child(odd) {
+            background: rgba(251, 191, 36, 0.3);
+            animation-delay: -2s;
+        }
+
+        .datetime-input {
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+        }
+
+        .datetime-input::-webkit-calendar-picker-indicator {
+            color: #9333ea;
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .countdown-number {
+            color: #000000 !important;
+            font-weight: 900;
+        }
+
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .section-spacer {
+            padding-top: 80px;
+        }
+
+        .section {
+            scroll-margin-top: 80px;
+        }
+
+        /* Enhanced Hero Image Styles */
+        .hero-image-container {
+            width: 500px;
+            height: 700px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-image-container {
+                width: 350px;
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-image-container {
+                width: 280px;
+                height: 400px;
+            }
+        }
+
+        .hero-image {
+            object-fit: cover;
+            object-position: center;
+            filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
+        }
+
+        .hero-placeholder {
+            transition: all 0.3s ease;
+        }
+
+        .hero-placeholder:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white font-inter overflow-x-hidden">
+    <!-- Navigation Bar -->
+    <div class="navbar navbar-fixed bg-black text-white">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></path>
+                    </svg>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a class="text-black" href="#zzz" onclick="scrollToSection('zzz')">Zenless Zone Zero</a></li>
+                    <li><a class="text-black" href="#hsr" onclick="scrollToSection('hsr')">Honkai Star Rail</a></li>
+                    <li><a class="text-black" href="#ww" onclick="scrollToSection('ww')">Wuthering Waves</a></li>
+                </ul>
+            </div>
+           
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="#zzz" onclick="scrollToSection('zzz')" ><img class="w-auto h-12" src="pic/zzzlogo.png" alt=""></a></li>
+                <li><a href="#hsr" onclick="scrollToSection('hsr')" ><img class="w-auto h-12" src="pic/starraillogo.png" alt=""></a></li>
+                <li><a href="#ww" onclick="scrollToSection('ww')"   ><img class="w-auto h-12" src="pic/wuwalogo.png" alt=""></a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <div class="text-sm text-gray-500 font-orbitron">
+                <span id="current-time"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zenless Zone Zero Section -->
+    <section id="zzz" class="section section-spacer relative min-h-screen">
+        <div class="fixed inset-0 grid-bg animate-grid opacity-30"></div>
+        
+        <div class="fixed inset-0 opacity-20">
+            <div class="absolute top-20 left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/2 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="particle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="top: 20%; right: 10%; animation-delay: -1s;"></div>
+        <div class="particle" style="bottom: 30%; left: 20%; animation-delay: -3s;"></div>
+        
+        <div class="relative z-10 min-h-screen flex flex-col justify-center items-center px-4 py-8">
+            <div class="text-center mb-8">
+                <h1 class="font-orbitron text-4xl md:text-6xl font-black text-gray-800 animate-glow-dark mb-4">
+                    ZENLESS ZONE ZERO
+                </h1>
+                <p class="text-purple-600 text-lg md:text-xl font-light tracking-widest uppercase">
+                    Version Update Countdown
+                </p>
+            </div>
+            
+            <div class="relative mb-8">
+                <div class="relative hero-image-container flex justify-center items-center">
+                    <div class="relative z-10 animate-float w-full h-full">
+                        <img src="pic/yixuan.png" alt="Hero Character" 
+                             class="w-full h-full hero-image rounded-3xl" 
+                             style="display: none;" 
+                             onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        
+                        <div class="w-full h-full glass rounded-3xl flex flex-col justify-center items-center text-gray-700 hero-placeholder">
+                            <div class="text-8xl mb-6">🎮</div>
+                            <div class="text-2xl font-semibold mb-2">ZZZ Character</div>
+                            <div class="text-sm text-gray-500">Click to upload image</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass rounded-3xl p-8 relative overflow-hidden shimmer max-w-4xl w-full">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8 relative z-10">
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="zzz-days">00</div>
+                            <div class="stat-title text-purple-600 font-semibold tracking-wider uppercase">Days</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="zzz-hours">00</div>
+                            <div class="stat-title text-purple-600 font-semibold tracking-wider uppercase">Hours</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="zzz-minutes">00</div>
+                            <div class="stat-title text-purple-600 font-semibold tracking-wider uppercase">Minutes</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="zzz-seconds">00</div>
+                            <div class="stat-title text-purple-600 font-semibold tracking-wider uppercase">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 w-full max-w-2xl">
+                <div class="flex justify-between text-sm text-gray-500 mb-2">
+                    <span>Started</span>
+                    <span id="zzz-target-date-display">Version Update Release</span>
+                </div>
+                <progress class="progress progress-error w-full h-3" id="zzz-countdown-progress" value="0" max="100"></progress>
+                <div class="text-center text-xs text-gray-400 mt-1">
+                    <span id="zzz-progress-text">Progress: 0%</span>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 mt-8">
+                <button class="btn btn-outline btn-lg border-purple-400 hover:border-purple-500 text-purple-600 hover:bg-purple-50" onclick="openCountdownModal('zzz')">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                    Set Countdown
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Honkai Star Rail Section -->
+    <section id="hsr" class="section relative min-h-screen">
+        <div class="fixed inset-0 grid-bg-hsr animate-grid opacity-30"></div>
+        
+        <div class="fixed inset-0 opacity-20">
+            <div class="absolute top-20 left-20 w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/2 w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="relative z-10 min-h-screen flex flex-col justify-center items-center px-4 py-8">
+            <div class="text-center mb-8">
+                <h1 class="font-orbitron text-4xl md:text-6xl font-black text-gray-800 animate-glow-hsr mb-4">
+                    HONKAI STAR RAIL
+                </h1>
+                <p class="text-red-600 text-lg md:text-xl font-light tracking-widest uppercase">
+                    Version Update Countdown
+                </p>
+            </div>
+            
+            <div class="relative mb-8">
+                <div class="relative hero-image-container flex justify-center items-center">
+                    <div class="relative z-10 animate-float w-full h-full">
+                        <img src="pic/castorice.png" alt="HSR Hero Character" 
+                             class="w-full h-full hero-image rounded-3xl" 
+                             style="display: none;" 
+                             onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        
+                        <div class="w-full h-full glass-hsr rounded-3xl flex flex-col justify-center items-center text-gray-700 hero-placeholder">
+                            <div class="text-8xl mb-6">⭐</div>
+                            <div class="text-2xl font-semibold mb-2">HSR Character</div>
+                            <div class="text-sm text-gray-500">Click to upload image</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-hsr rounded-3xl p-8 relative overflow-hidden shimmer max-w-4xl w-full">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8 relative z-10">
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="hsr-days">00</div>
+                            <div class="stat-title text-red-600 font-semibold tracking-wider uppercase">Days</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="hsr-hours">00</div>
+                            <div class="stat-title text-red-600 font-semibold tracking-wider uppercase">Hours</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="hsr-minutes">00</div>
+                            <div class="stat-title text-red-600 font-semibold tracking-wider uppercase">Minutes</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="hsr-seconds">00</div>
+                            <div class="stat-title text-red-600 font-semibold tracking-wider uppercase">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 w-full max-w-2xl">
+                <div class="flex justify-between text-sm text-gray-500 mb-2">
+                    <span>Started</span>
+                    <span id="hsr-target-date-display">Version Update Release</span>
+                </div>
+                <progress class="progress progress-error w-full h-3" id="hsr-countdown-progress" value="0" max="100"></progress>
+                <div class="text-center text-xs text-gray-400 mt-1">
+                    <span id="hsr-progress-text">Progress: 0%</span>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 mt-8">
+                <button class="btn btn-outline btn-lg border-red-400 hover:border-red-500 text-red-600 hover:bg-red-50" onclick="openCountdownModal('hsr')">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                    Set Countdown
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wuthering Waves Section -->
+    <section id="ww" class="section relative min-h-screen">
+        <div class="fixed inset-0 grid-bg-ww animate-grid opacity-30"></div>
+        
+        <div class="fixed inset-0 opacity-20">
+            <div class="absolute top-20 left-20 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+            <div class="absolute top-40 right-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/2 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="relative z-10 min-h-screen flex flex-col justify-center items-center px-4 py-8">
+            <div class="text-center mb-8">
+                <h1 class="font-orbitron text-4xl md:text-6xl font-black text-gray-800 animate-glow-ww mb-4">
+                    WUTHERING WAVES
+                </h1>
+                <p class="text-green-600 text-lg md:text-xl font-light tracking-widest uppercase">
+                    Version Update Countdown
+                </p>
+            </div>
+            
+            <div class="relative mb-8">
+                <div class="relative hero-image-container flex justify-center items-center">
+                    <div class="relative z-10 animate-float w-full h-full">
+                        <img src="pic/Cartethyia.webp" alt="WW Hero Character" 
+                             class="w-full h-full hero-image rounded-3xl" 
+                             style="display: none;" 
+                             onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        
+                        <div class="w-full h-full glass-ww rounded-3xl flex flex-col justify-center items-center text-gray-700 hero-placeholder">
+                            <div class="text-8xl mb-6">🌊</div>
+                            <div class="text-2xl font-semibold mb-2">WW Character</div>
+                            <div class="text-sm text-gray-500">Click to upload image</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-ww rounded-3xl p-8 relative overflow-hidden shimmer max-w-4xl w-full">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8 relative z-10">
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="ww-days">00</div>
+                            <div class="stat-title text-green-600 font-semibold tracking-wider uppercase">Days</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="ww-hours">00</div>
+                            <div class="stat-title text-green-600 font-semibold tracking-wider uppercase">Hours</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="ww-minutes">00</div>
+                            <div class="stat-title text-green-600 font-semibold tracking-wider uppercase">Minutes</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="stat">
+                            <div class="stat-value font-orbitron text-4xl md:text-5xl countdown-number" id="ww-seconds">00</div>
+                            <div class="stat-title text-green-600 font-semibold tracking-wider uppercase">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 w-full max-w-2xl">
+                <div class="flex justify-between text-sm text-gray-500 mb-2">
+                    <span>Started</span>
+                    <span id="ww-target-date-display">Version Update Release</span>
+                </div>
+                <progress class="progress progress-error w-full h-3" id="ww-countdown-progress" value="0" max="100"></progress>
+                <div class="text-center text-xs text-gray-400 mt-1">
+                    <span id="ww-progress-text">Progress: 0%</span>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 mt-8">
+                <button class="btn btn-outline btn-lg border-green-400 hover:border-green-500 text-green-600 hover:bg-green-50" onclick="openCountdownModal('ww')">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                    Set Countdown
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Setting Modal -->
+    <dialog id="countdown_modal" class="modal">
+        <div class="modal-box w-11/12 max-w-2xl glass">
+            <h3 class="font-bold text-lg mb-6 text-black font-orbitron" id="modal-title">Set Countdown Timer</h3>
+            
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text font-semibold">Target Date & Time</span>
+                </label>
+                <input type="datetime-local" id="target-datetime" 
+                       class="input input-bordered w-full datetime-input focus:border-purple-400" />
+                <label class="label">
+                    <span class="label-text-alt text-gray-500">เลือกวันที่และเวลาที่ต้องการนับถอยหลัง</span>
+                </label>
+            </div>
+            
+            <div class="form-control w-full mb-4">
+                <label class="label">
+                    <span class="label-text font-semibold">Event Title</span>
+                </label>
+                <input type="text" id="event-title" placeholder="Version Update Release" 
+                       class="input input-bordered w-full focus:border-purple-400" value="Version Update Release" />
+            </div>
+            
+            <div class="form-control w-full mb-6">
+                <label class="label">
+                    <span class="label-text font-semibold">Description (Optional)</span>
+                </label>
+                <textarea id="event-description" class="textarea textarea-bordered focus:border-purple-400" 
+                          placeholder="Enter event description..."></textarea>
+            </div>
+            
+            <div class="alert alert-info mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm">
+                    <strong>Current Target:</strong> <span id="current-target-info">Not Set</span>
+                </span>
+            </div>
+            
+            <div class="modal-action">
+                <button class="btn btn-outline" onclick="countdown_modal.close()">Cancel</button>
+                <button class="btn btn-primary bg-purple-600 hover:bg-purple-700 border-purple-600" onclick="setCountdown()">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Set Countdown
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>
